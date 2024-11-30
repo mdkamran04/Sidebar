@@ -1,95 +1,135 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from "react";
 import {
-  FaLayerGroup, FaChevronDown, FaCircle, FaChartSimple,FaUser, FaCube, FaBook, FaChevronRight, FaHammer, 
-} from 'react-icons/fa6';
+  FaLayerGroup,
+  FaChevronDown,
+  FaCircle,
+  FaChartSimple,
+  FaUser,
+  FaCube,
+  FaBook,
+  FaChevronRight,
+  FaHammer,
+} from "react-icons/fa6";
 
 const Sidebar = () => {
   const menu = [
-    { title: 'Dashboard', icon: FaLayerGroup, subitems: [] },
+    { title: "Dashboard", icon: FaLayerGroup, subitems: [] },
     {
-      title: 'Project',
+      title: "Project",
       icon: FaChartSimple,
       subitems: [
-        { title: 'Project 1', icon: FaCircle },
-        { title: 'Project 2', icon: FaCircle },
+        { title: "Project 1", icon: FaCircle },
+        { title: "Project 2", icon: FaCircle },
       ],
     },
-    { title: 'Hammer', icon: FaHammer, subitems: [
-        { title: 'Hit ', icon: FaCircle },
-        { title: 'Other', icon: FaCircle },
-    ] },
     {
-      title: 'Books',
+      title: "Hammer",
+      icon: FaHammer,
+      subitems: [
+        { title: "Hit", icon: FaCircle },
+        { title: "Other", icon: FaCircle },
+      ],
+    },
+    {
+      title: "Books",
       icon: FaBook,
       subitems: [
-        { title: 'Article 1', icon: FaCircle },
-        { title: 'Article 2', icon: FaCircle },
+        { title: "Article 1", icon: FaCircle },
+        { title: "Article 2", icon: FaCircle },
       ],
     },
     {
-      title: 'Box (Pops Right)',
+      title: "Box (Pops Right)",
       icon: FaCube,
       subitems: [
-        { title: 'Option 1', icon: FaCircle },
-        { title: 'Option 2', icon: FaCircle },
-        { title: 'Option 3', icon: FaCircle, subitems :[] },
+        { title: "Option 1", icon: FaCircle },
+        { title: "Option 2", icon: FaCircle },
+        {
+          title: "Option 3",
+          icon: FaCircle,
+          subitems: [
+            { title: "Sub Option 1", icon: FaCircle },
+            {
+              title: "Sub Option 2",
+              icon: FaCircle,
+              subitems: [
+                { title: "Level 3 Nesting", icon: FaCircle },
+                { title: "Level 3 Nesting", icon: FaCircle },
+              ],
+              expandRight: true,
+            },
+          ],
+          expandRight: true,
+        },
       ],
-      expandRight: true, // This will pop up to the right
+      expandRight: true,
     },
-    { title: 'Account', icon: FaUser, subitems: [] },
+    { title: "Account", icon: FaUser, subitems: [] },
   ];
 
-  const [activeTab, setActiveTab] = useState(menu[0].title);
-  const [expandedItem, setExpandedItem] = useState(null);
+  const [expandedPaths, setExpandedPaths] = useState([]);
 
-  const toggleExpand = (itemTitle) => {
-    setExpandedItem(expandedItem === itemTitle ? null : itemTitle);
+  // Toggle Expansion by Path
+  const toggleExpand = (path) => {
+    setExpandedPaths(
+      (prev) =>
+        prev.includes(path)
+          ? prev.filter((p) => p !== path) // Collapse if already expanded
+          : [...prev, path] // Expand otherwise
+    );
   };
 
-  return (
-    <div className="w-[280px] bg-gray-800 h-screen border-r border-gray-600 text-white">
-      <ul className="mt-2">
-        {menu.map((item) => {
+  // Recursive Menu Rendering
+  const renderMenu = (items, level = 0, parentPath = "") => {
+    return (
+      <ul
+        className={`${level === 0 ? "mt-2" : "ml-6"} bg-gray-800 ${
+          level > 0 ? "border-l border-gray-600" : ""
+        }`}
+      >
+        {items.map((item, index) => {
+          const path = `${parentPath}/${item.title}`;
+          const isExpanded = expandedPaths.includes(path);
           const isRightPopup = item.expandRight;
 
           return (
-            <li key={item.title} className="relative w-full px-3 py-1 text-gray-300">
+            <li key={path} className="relative w-full px-3 py-1 text-gray-300">
               <a
-                onClick={() => toggleExpand(item.title)}
+                onClick={() => item.subitems?.length && toggleExpand(path)}
                 href="#"
-                className="flex justify-between items-center px-4 py-3 hover:bg-gray-700 rounded-md"
+                className={`flex justify-between items-center px-4 py-3 hover:bg-gray-700 rounded-md`}
               >
-                <span className="flex items-center group-hover:text-white">
+                <span className="flex items-center">
                   {React.createElement(item.icon, { size: 20 })}
                   <p className="ml-4">{item.title}</p>
                 </span>
-                {item.subitems.length > 0 && (isRightPopup ? <FaChevronRight size={14} /> : <FaChevronDown size={14} />)}
+                {item.subitems?.length > 0 &&
+                  (isRightPopup ? (
+                    <FaChevronRight size={14} />
+                  ) : (
+                    <FaChevronDown size={14} />
+                  ))}
               </a>
 
-              {expandedItem === item.title && item.subitems.length > 0 && (
+              {isExpanded && item.subitems?.length > 0 && (
                 <ul
                   className={`${
-                    isRightPopup ? 'absolute left-full top-0 w-48' : 'ml-6'
+                    isRightPopup ? "absolute left-full top-0 w-48" : "ml-6 mt-2"
                   } bg-gray-800 shadow-md rounded-md`}
                 >
-                  {item.subitems.map((subitem) => (
-                    <li key={subitem.title} className="py-2 px-4 hover:bg-gray-700">
-                      <a
-                        onClick={() => setActiveTab(subitem.title)}
-                        href="#"
-                        className={`flex items-center ${activeTab === subitem.title ? 'text-white' : 'text-gray-300'}`}
-                      >
-                        {React.createElement(subitem.icon, { size: 14 })}
-                        <p className="ml-2">{subitem.title}</p>
-                      </a>
-                    </li>
-                  ))}
+                  {renderMenu(item.subitems, level + 1, path)}
                 </ul>
               )}
             </li>
           );
         })}
       </ul>
+    );
+  };
+
+  return (
+    <div className="w-[280px] bg-gray-800 h-screen border-r border-gray-600 text-white">
+      {renderMenu(menu)}
     </div>
   );
 };
