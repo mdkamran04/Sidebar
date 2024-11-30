@@ -1,8 +1,3 @@
-# React + Vite
+# Sidebar App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is a sidebar navigation UI developed with React, Tailwind CSS, and React Icons. It was created as a small test for the Focus Research Labs startup, aiming to showcase an interactive and responsive sidebar with multi-level nesting. The sidebar features expandable menu items that can either expand downward or to the right, providing a flexible and dynamic navigation experience. It also supports customization, allowing for easy addition or removal of menu items and configurations. The project uses React's Context API to manage the state of the sidebar, such as visibility, and is styled using Tailwind's utility-first approach to quickly design and customize the layout.
